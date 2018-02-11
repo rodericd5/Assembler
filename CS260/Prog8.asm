@@ -24,13 +24,15 @@
 ;
 ;*************************PROTOTYPES***************************
 
-    ExitProcess PROTO				; Exit code in rcx
+    ExitProcess PROTO					;Exit code in rcx
 	
 	DspChar PROTO					;Display the character in rcx to the console
 	
 	DspHex PROTO					;Display the unsigned decimal number in rcx to the console
-		DspStr PROTO					;Display a zero terminated string to the console. Str address in rcx.
-    MessageBoxA PROTO				;MessageBoxA takes 4 parameters: 
+	
+	DspStr PROTO					;Display a zero terminated string to the console. Str address in rcx.
+
+    MessageBoxA PROTO					;MessageBoxA takes 4 parameters: 
 									;  1. window owner handle (rcx)
 									;  2. message address (zero terminated string) (rdx)
 									;  3. title address(zero terminated string) (r8)   
@@ -69,10 +71,10 @@ ENDM
 
 
 mPrtChar MACRO  arg1				;arg1 is replaced by the name of character to be displayed
-         push rcx					;save rcx
+         push rcx				;save rcx
          mov cl, arg1				;character to display should be in cl
          call DspChar				;display character
-         pop rcx					;restore rcx
+         pop rcx				;restore rcx
 ENDM
 
 
@@ -84,10 +86,10 @@ ENDM
 
 
 mPrtHex  MACRO  arg1				;arg1 is replaced by the hex number to be displayed
-         push rcx					;save rcx
+         push rcx				;save rcx
          mov rcx, arg1				;hex number to display should be in rcx
          call DspHex				;display hex number
-         pop rcx					;restore eax
+         pop rcx				;restore eax
 ENDM
 
 
@@ -95,11 +97,11 @@ ENDM
 
 .data
    
-    num1    qword   0D967361CB7FB71h				       ;num1 = 0CB7FB71h (32bit)
-    num2    qword   23FDD2456h							   ;num2 = 0FDD2456h (32bit)
+    num1    qword   0D967361CB7FB71h				       			   ;num1 = 0CB7FB71h (32bit)
+    num2    qword   23FDD2456h							   	   ;num2 = 0FDD2456h (32bit)
 	num3	qword	0F234C57h							   ;num3 = 0C57h	  (32bit)
 	num4	qword	1B67A45A9h							   ;num4 = 0A45A9h	  (32bit)
-	num5	qword	1D23B492FDE2B46Bh					   ;num5 = 0FDE2B46Bh(32bit)
+	num5	qword	1D23B492FDE2B46Bh					   	   ;num5 = 0FDE2B46Bh(32bit)
 	num6	qword	6567D3494h							   ;num6 = 0D3494h	  (32bit)
 	num7	qword	5BC4ABC12h							   ;num7 = 4ABCh	  (32bit)
 
@@ -121,9 +123,9 @@ ENDM
 main PROC
 
 	sub   rsp,28h			;32 bytes for shadow space plus 8 bytes to
-							;align stack on 16 byte boundary
-							;4 parameters + return address
-							;only 8 bytes for ret add so need another 8
+					;align stack on 16 byte boundary
+					;4 parameters + return address
+					;only 8 bytes for ret add so need another 8
 	
 	mPrtHex	num1			;print num1 in hex		
 	mPrtStr hPlus			;print h plus for formatting
@@ -152,7 +154,7 @@ main PROC
 
 	;num 2 * num 3 % num4
     mov     rax, num2	    ;rax = num2
-    mul		num3			;rax * num3
+    mul		num3				;rax * num3
 	div		num4			;rdx:rax / num4 -> remainder in rdx
 	
 	;moving remainder to an unused register and preparing rax/rdx for division
@@ -169,16 +171,16 @@ main PROC
 	sub		rbx, rdx		;rbx = rbx (num1 + num2 * num3 % num4) - rdx (num5 / (num6 - num7))
 
 	mPrtHex rbx				;print out result
-	mPrtChar 'h'			;print out h for formatting
+	mPrtChar 'h'				;print out h for formatting
 
-	mov   rcx, 0			;A handle to the owner window of the message box to be created. 
+	mov   rcx, 0				;A handle to the owner window of the message box to be created. 
 							;If this parameter is NULL, the message box has no owner window.
-	lea   rdx, exitingMSG   ;The message to be displayed in message box
-	lea   r8,  openingMSG   ;The message box title
-	mov   r9d, 0            ;0 = display ok button
-	Call  MessageBoxA       ;call MessageBox API function
-	mov   rcx, 0			;exit code for ExitProcess
-	call  ExitProcess       ;exit program
+	lea   rdx, exitingMSG   		;The message to be displayed in message box
+	lea   r8,  openingMSG   		;The message box title
+	mov   r9d, 0            		;0 = display ok button
+	Call  MessageBoxA       		;call MessageBox API function
+	mov   rcx, 0				;exit code for ExitProcess
+	call  ExitProcess       		;exit program
 
 main ENDP
 End
